@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- style css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">    
+    
+    <!-- tailwind.css -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- font awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <title>AI Detector</title>
+    
+</head>
+<body>    
+
+    <div>
+
+        <div class="section" class="Home">
+
+            <nav class="bg-gray-300 shadow-lg">
+
+                <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+
+                    <div class="relative flex h-16 items-center justify-between">
+                    
+                        <!-- Mobile menu button-->
+                        <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                            <button id="mobile-menu-button" type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-[#000000] hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                                <span class="sr-only">Open main menu</span>
+                                
+                                <!-- Icon when menu is closed -->
+                                <svg id="menu-open" class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                                </svg>
+                                
+                                <!-- Icon when menu is open -->
+                                <svg id="menu-close" class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+
+                            </button>
+                        </div>
+                        
+                        <!-- Desktop menu -->
+                        <div class="flex flex-1 items-center justify-center">
+                            <div class="hidden sm:block">
+                                <div class="flex space-x-4">
+                                    <a href="#1" class="rounded-md px-3 py-2 text-sm font-medium text-gray-950 hover:bg-[#000000] hover:text-white">Home</a>
+                                    <a href="#about" class="rounded-md px-3 py-2 text-sm font-medium text-gray-950 hover:bg-[#000000] hover:text-white">About</a>
+                                    <a href="https://github.com/zakariaeanouk/IA-detector.git" class="rounded-md px-3 py-2 text-sm font-medium text-gray-950 hover:bg-[#000000] hover:text-white">Github Repository <i class="fab fa-github fa-xl"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <!-- Mobile menu, initially hidden -->
+                <div class="sm:hidden overflow-hidden max-h-0 opacity-0 transition-all duration-500 ease-in-out" id="mobile-menu">
+                    <div class="space-y-1 px-2 pb-3 pt-2">
+                        <a href="#1" class="block rounded-md px-3 py-2 text-base font-medium text-gray-950 hover:bg-[#000000] hover:text-white">Home</a>
+                        <a href="#about" class="block rounded-md px-3 py-2 text-base font-medium text-gray-950 hover:bg-[#000000] hover:text-white">About</a>
+                        <a href="https://github.com/zakariaeanouk/IA-detector.git" class="rounded-md px-3 py-2 text-sm font-medium text-gray-950 hover:bg-[#000000] hover:text-white">Github Repository<i class="fab fa-github fa-xl"></i></a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="Home">
+
+                <div>
+                    <h1 class="text-4xl text-black text-center mb-5 pb-5 font-serif">Welcome To AI Detector</h1>
+                </div>
+
+                
+
+                <div class="flex items-center justify-center w-full">
+                    <!-- Main Container -->
+                    <div class="flex items-start justify-center w-3/4">
+                        <!-- Form Section -->
+                        <div class="flex-grow flex flex-col justify-center">
+                            <form id="predictForm" action="/predict" method="POST" class="flex flex-col items-center">
+                                <textarea 
+                                    name="text" 
+                                    id="textarea" 
+                                    class="border border-gray-400 rounded resize-none w-full p-2" 
+                                    placeholder="Enter text here..." 
+                                    rows="12" 
+                                    required>{{text}}</textarea>
+                                <div class="my-3"></div>
+                            </form>
+                        </div>
+
+                        <!-- Donut Chart Section -->
+                        <div class="flex flex-col justify-center items-center w-1/4 mx-auto">
+                            <div class="relative donut-chart donut-chart w-32 h-32 rounded-full" style="--percentage: {{proba}};">
+                                <!-- Percentage  -->
+                                <div id="percentage" class="absolute inset-0 flex items-center justify-center text-lg font-semibold text-black">
+                                    
+                                    {{ proba }}%
+                            
+                                </div>
+                            </div>
+                            <!-- Text below the chart -->
+                            <div class="text-center mt-4">
+                                <p class="text-lg font-medium text-gray-700">
+                                Predicted class:
+                                </p>
+                                <p class="text-lg font-bold text-gray-800">
+                                    {{prediction}}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
+
+
+                <div>
+                    <div class="text-sm text-gray-600  flex items-center justify-center">
+                        
+                        <div class="flex items-center justify-center">
+                            <span>Word count:</span>
+                            <br>
+                            <span id="wordCount" class="transition-colors number">0</span>
+                            <span class="number">/500</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex items-center justify-center">
+                            
+                        <button type="button"  class="shadow-lg relative inline-flex items-center justify-center p-0.5 my-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-black"  onclick="return validateWordCount(event)">
+                            <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
+                                Predict
+                            </span>
+                        </button>
+
+                    </div>
+                
+                    <div class="flex flex items-center justify-center">
+                        <div id="errorMessage" class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-red-800 dark:text-red-400 dark:border-red-800 w-2/4 my-5 hidden" role="alert">
+                            <i class="fa-solid fa-circle-exclamation me-4 flex-shrink-0"></i>
+                            <div class="text-white">
+                                <span class="font-medium text-white">Error!</span> Number of Words must be between 50 and 500.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                  
+            </div>
+
+        </div>
+
+
+        <div class="section">
+            <div class="h-screen flex items-center justify-center border-0">
+                <div class="card xl:w-10/12 mx-auto about-section bg-transparent">
+
+                    <div class="border-0 bg-transparent text-center">
+                        <h1 class="text-4xl  font-bold mb-4 font-serif">About The project</h1>
+                        <br>
+                        <h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-black font-serif">Technologies used include:</h2>
+
+                        <ul class="text-gray-500 list-disc list-inside dark:text-black font-serif">
+                            <li>HTML, CSS, Javascript and Tailwind for a responsive interface.</li>
+                            <li>Scikit-learn for machine learning algorithms.</li>
+                            <li>Flask for backend development.</li>
+                        </ul>
+
+                        <br>
+                        <h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-black ">Supported Models: Cohere, Davinci003, GPT-3.5, GPT-4, BLOOMz, Dolly-v2</h2>
+                    </div>
+                
+                </div>
+                
+            </div>
+            
+        </div>
+
+    </div>
+
+
+
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
